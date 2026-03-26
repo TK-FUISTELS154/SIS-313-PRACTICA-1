@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Docentes 1/2026</title>
+</head>
+
+<body>
+    <h1>Lista Docentes 1/2026</h1>
+    <table border="1" id="tabla-docentes">
+        <thead>
+            <tr>
+                <th>Nro</th>
+                <th>Apellidos y Nombres</th>
+                <th>Materias</th>
+                <th>Carga Horaria Semanal</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        async function leerExcel() {
+            // 1. Abrir el archivo Excel
+            const response = await fetch('Base_Datos_Universidad.xlsx');
+            const data = await response.arrayBuffer();
+            const workbook = XLSX.read(data);
+
+            // 2. Leer la hoja llamada "Docentes"
+            const nombreHoja = workbook.SheetNames[0]; // La primera hoja
+            const hoja = workbook.Sheets[nombreHoja];
+            const filas = XLSX.utils.sheet_to_json(hoja);
+
+            // 3. Dibujar la tabla
+            const tbody = document.querySelector('#tabla-docentes tbody');
+            filas.forEach(fila => {
+                const tr = `<tr>
+                    <td>${fila['Nro']}</td>
+                    <td>${fila['Apellidos y Nombres']}</td>
+                    <td>${fila['Materias']}</td>
+                    <td>${fila['Carga Horaria Semanal']}</td>
+                </tr>`;
+                tbody.innerHTML += tr;
+            });
+        }
+        leerExcel();
+    </script>
+</body>
+
+</html>
